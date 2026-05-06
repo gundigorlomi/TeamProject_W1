@@ -27,19 +27,19 @@ export const Compare = () => {
 
   const diff = (right?.score ?? 0) - (left?.score ?? 0);
   const diffStyle: React.CSSProperties = {
-    background: diff > 0 ? "#ecfdf5" : diff < 0 ? "#fef2f2" : "#f1f5f9",
-    color: diff > 0 ? "#059669" : diff < 0 ? "#dc2626" : "#64748b",
+    background: diff > 0 ? "rgba(16, 185, 129, 0.15)" : diff < 0 ? "rgba(239, 68, 68, 0.15)" : "rgba(148, 163, 184, 0.15)",
+    color: diff > 0 ? "#10b981" : diff < 0 ? "#ef4444" : "#64748b",
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       <Header current={current} onSelect={setLeftId} />
       <main className="max-w-[1440px] mx-auto px-6 py-5">
         {left && right && (
           <div className="mb-4 flex items-center justify-center">
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white border border-slate-200 rounded-full text-[12px] text-slate-600">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-[12px] text-slate-600 dark:text-slate-300 animate-fade-up">
               <span className="font-mono">{left.influencer.handle}</span>
-              <span className="text-slate-300">vs</span>
+              <span className="text-slate-300 dark:text-slate-600">vs</span>
               <span className="font-mono">{right.influencer.handle}</span>
               <span className="ml-1 px-2 py-0.5 rounded-full font-mono font-semibold text-[11px]" style={diffStyle}>
                 {diff > 0 ? "+" : ""}
@@ -52,12 +52,12 @@ export const Compare = () => {
           {left ? (
             <CompareColumn scan={left} options={options} onChange={setLeftId} sideLabel="Influencer A" />
           ) : (
-            <div className="rounded-xl border border-dashed border-slate-300 p-12 text-center text-slate-400">Loading A…</div>
+            <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 p-12 text-center text-slate-400 dark:text-slate-500">Loading A…</div>
           )}
           {right ? (
             <CompareColumn scan={right} options={options} onChange={setRightId} sideLabel="Influencer B" />
           ) : (
-            <div className="rounded-xl border border-dashed border-slate-300 p-12 text-center text-slate-400">Loading B…</div>
+            <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 p-12 text-center text-slate-400 dark:text-slate-500">Loading B…</div>
           )}
         </div>
       </main>

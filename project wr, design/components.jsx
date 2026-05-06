@@ -93,7 +93,7 @@ const Avatar = ({ initials, hue = 220, size = 56, ring = false }) => (
 
 // ---------------- Card ----------------
 const Card = ({ title, subtitle, action, children, className = "", padded = true }) => (
-  <section className={"bg-white border border-slate-200 rounded-xl " + className}>
+  <section className={"dashboard-card bg-white border border-slate-200 rounded-xl " + className}>
     {(title || action) && (
       <header className="flex items-start justify-between gap-4 px-5 pt-4 pb-3 border-b border-slate-100">
         <div>
@@ -106,6 +106,27 @@ const Card = ({ title, subtitle, action, children, className = "", padded = true
     <div className={padded ? "p-5" : ""}>{children}</div>
   </section>
 );
+
+// ---------------- Animated Number ----------------
+const AnimatedNumber = ({ value, format = (n) => Math.round(n).toLocaleString(), duration = 760, className = "" }) => {
+  const [displayValue, setDisplayValue] = React.useState(0);
+  React.useEffect(() => {
+    if (typeof value !== "number") return;
+    let raf = 0;
+    const start = performance.now();
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const tick = (now) => {
+      const progress = Math.min(1, (now - start) / duration);
+      setDisplayValue(value * ease(progress));
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    };
+    setDisplayValue(0);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+
+  return <span className={className}>{format(displayValue)}</span>;
+};
 
 // ---------------- Authenticity Gauge ----------------
 const AuthenticityGauge = ({ score, size = 220, thickness = 14 }) => {
@@ -164,6 +185,8 @@ const AuthenticityGauge = ({ score, size = 220, thickness = 14 }) => {
           strokeWidth={thickness}
           fill="none"
           strokeLinecap="round"
+          pathLength="1"
+          className="gauge-value-arc"
         />
         {/* Tick marks at 45 and 75 */}
         {[45, 75].map((t) => {
@@ -175,7 +198,7 @@ const AuthenticityGauge = ({ score, size = 220, thickness = 14 }) => {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
         <div className="font-mono text-[64px] leading-none font-semibold tracking-tight" style={{ color: tier.hex, fontFeatureSettings: '"tnum"' }}>
-          {score}
+          <AnimatedNumber value={score} format={(n) => Math.round(n)} />
         </div>
         <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400 mt-1">/100</div>
         <div className="mt-3 px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider"
@@ -198,18 +221,18 @@ const SubscoreBar = ({ label, value, hint }) => {
           {hint && <div className="text-[11px] text-slate-400">{hint}</div>}
         </div>
         <div className="font-mono text-[13px] tabular-nums font-semibold" style={{ color: tier.hex }}>
-          {value}
+          <AnimatedNumber value={value} format={(n) => Math.round(n)} />
         </div>
       </div>
       <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-        <div className="h-full rounded-full" style={{ width: value + "%", background: tier.hex }} />
+        <div className="bar-fill h-full rounded-full" style={{ width: value + "%", background: tier.hex }} />
       </div>
     </div>
   );
 };
 
 // ---------------- Sparkline / Timeline Chart ----------------
-const TimelineChart = ({ data, height = 200, showSuspicious = true }) => {
+const TimelineChart = ({ data, height = 200, showSuspicious = true, range = "90d" }) => {
   const w = 720;
   const h = height;
   const padL = 40, padR = 12, padT = 16, padB = 24;
@@ -249,18 +272,18 @@ const TimelineChart = ({ data, height = 200, showSuspicious = true }) => {
         {showSuspicious && spikes.map((d, i) => (
           <g key={i}>
             <line x1={xs(d.day)} y1={padT} x2={xs(d.day)} y2={h - padB} stroke="#ef4444" strokeWidth="1" strokeDasharray="2 3" opacity="0.4" />
-            <circle cx={xs(d.day)} cy={yL(d.likes)} r="5" fill="#fff" stroke="#ef4444" strokeWidth="2" />
+            <circle className="burst-marker" cx={xs(d.day)} cy={yL(d.likes)} r="5" fill="#fff" stroke="#ef4444" strokeWidth="2" />
           </g>
         ))}
         {/* Likes area + line */}
-        <path d={pathLArea} fill="url(#likesGrad)" />
-        <path d={pathL} fill="none" stroke="#6366f1" strokeWidth="2" />
+        <path className="chart-area" d={pathLArea} fill="url(#likesGrad)" />
+        <path className="chart-line" d={pathL} fill="none" stroke="#6366f1" strokeWidth="2" pathLength="1" />
         {/* Comments line */}
-        <path d={pathC} fill="none" stroke="#94a3b8" strokeWidth="1.25" strokeDasharray="3 3" />
+        <path className="chart-line chart-line-muted" d={pathC} fill="none" stroke="#94a3b8" strokeWidth="1.25" strokeDasharray="3 3" pathLength="1" />
         {/* X axis labels */}
         {[0, Math.floor(data.length / 2), data.length - 1].map((i) => (
           <text key={i} x={xs(i)} y={h - 6} fontSize="9" fill="#94a3b8" textAnchor="middle" fontFamily="ui-monospace">
-            {i === 0 ? "90d ago" : i === data.length - 1 ? "today" : "45d"}
+            {i === 0 ? `${range} ago` : i === data.length - 1 ? "today" : range === "90d" ? "45d" : range === "6m" ? "3m" : "6m"}
           </text>
         ))}
       </svg>
@@ -322,7 +345,7 @@ const BarList = ({ rows, valueSuffix = "%", color = "#0f172a" }) => (
       <div key={i} className="flex items-center gap-3">
         <div className="text-[12px] text-slate-600 w-32 truncate">{r.label || r.country}</div>
         <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-          <div className="h-full rounded-full" style={{ width: r.value + "%", background: color }} />
+          <div className="bar-fill h-full rounded-full" style={{ width: r.value + "%", background: color }} />
         </div>
         <div className="font-mono text-[11px] tabular-nums text-slate-500 w-9 text-right">{r.value}{valueSuffix}</div>
       </div>
@@ -337,5 +360,5 @@ Object.assign(window, {
   IconClose, IconUserMinus, IconRefresh, IconExternal, IconDot,
   IconInstagram, IconTikTok, IconYouTube, PlatformIcon,
   fmtNum, scoreTier, severityStyles,
-  Avatar, Card, AuthenticityGauge, SubscoreBar, TimelineChart, DonutChart, BarList,
+  Avatar, Card, AnimatedNumber, AuthenticityGauge, SubscoreBar, TimelineChart, DonutChart, BarList,
 });

@@ -84,7 +84,7 @@ export const EngagementTimeline = ({ data }: { data: TimelinePoint[] }) => {
       title="Engagement Timeline"
       subtitle={subtitle}
       action={
-        <div className="relative flex items-center gap-0.5 text-[11px] bg-slate-100 rounded-md p-0.5">
+        <div className="relative flex items-center gap-0.5 text-[11px] bg-slate-100 dark:bg-slate-800 rounded-md p-0.5">
           {RANGE_OPTS.map((r) => {
             const active = r.id === range;
             return (
@@ -93,12 +93,14 @@ export const EngagementTimeline = ({ data }: { data: TimelinePoint[] }) => {
                 onClick={() => setRange(r.id)}
                 className={
                   "relative z-10 px-2.5 py-1 rounded font-medium transition-colors duration-200 " +
-                  (active ? "text-slate-900" : "text-slate-500 hover:text-slate-900")
+                  (active
+                    ? "text-slate-900 dark:text-slate-100"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100")
                 }
               >
                 {active && (
                   <span
-                    className="absolute inset-0 bg-white rounded shadow-sm -z-10 animate-scale-in"
+                    className="absolute inset-0 bg-white dark:bg-slate-900 rounded shadow-sm -z-10 animate-scale-in"
                     style={{ animationDuration: "240ms" }}
                   />
                 )}

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { useTheme } from "../hooks/useTheme";
 import { fmtNum } from "../lib/format";
 import { scoreTier } from "../lib/score";
 
@@ -44,6 +45,9 @@ export const AuthenticityGauge = ({
 }) => {
   const tier = scoreTier(score);
   const animated = useCountUp(score, 1300);
+  const { isDark } = useTheme();
+  const trackColor = isDark ? "#1e293b" : "#f1f5f9";
+  const tickColor = isDark ? "#0f172a" : "#fff";
   const r = (size - thickness) / 2;
   const cx = size / 2;
   const cy = size / 2;
@@ -79,7 +83,7 @@ export const AuthenticityGauge = ({
             </feMerge>
           </filter>
         </defs>
-        <path d={arcPath(r, startAngle, endAngle)} stroke="#f1f5f9" strokeWidth={thickness} fill="none" strokeLinecap="round" />
+        <path d={arcPath(r, startAngle, endAngle)} stroke={trackColor} strokeWidth={thickness} fill="none" strokeLinecap="round" />
         {segments.map((seg, i) => {
           const sd = startAngle + (seg.from / 100) * totalSweep;
           const ed = startAngle + (seg.to / 100) * totalSweep;
@@ -108,7 +112,7 @@ export const AuthenticityGauge = ({
           const a = startAngle + (t / 100) * totalSweep;
           const inner = polar(cx, cy, r - thickness / 2 - 2, a);
           const outer = polar(cx, cy, r + thickness / 2 + 2, a);
-          return <line key={t} x1={inner.x} y1={inner.y} x2={outer.x} y2={outer.y} stroke="#fff" strokeWidth={2} />;
+          return <line key={t} x1={inner.x} y1={inner.y} x2={outer.x} y2={outer.y} stroke={tickColor} strokeWidth={2} />;
         })}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
@@ -147,8 +151,8 @@ export const SubscoreBar = ({
     <div className="group">
       <div className="flex items-baseline justify-between mb-1.5">
         <div className="flex items-center gap-2">
-          <div className="text-[13px] font-medium text-slate-700">{label}</div>
-          {hint && <div className="text-[11px] text-slate-400">{hint}</div>}
+          <div className="text-[13px] font-medium text-slate-700 dark:text-slate-200">{label}</div>
+          {hint && <div className="text-[11px] text-slate-400 dark:text-slate-500">{hint}</div>}
         </div>
         <div
           className="font-mono text-[13px] tabular-nums font-semibold"
@@ -157,7 +161,7 @@ export const SubscoreBar = ({
           {Math.round(animated)}
         </div>
       </div>
-      <div className="relative h-1.5 bg-slate-100 rounded-full overflow-hidden">
+      <div className="relative h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
         <div
           key={value /* re-mount on value change to replay grow animation */}
           className="bar-fill h-full rounded-full relative"
@@ -211,6 +215,10 @@ export const TimelineChart = ({
 
   // animation key based on data identity so the line re-draws when range changes
   const animKey = useMemo(() => `${data.length}-${data[0]?.likes ?? 0}-${data[data.length - 1]?.likes ?? 0}`, [data]);
+  const { isDark } = useTheme();
+  const gridColor = isDark ? "#1e293b" : "#f1f5f9";
+  const tickFill = isDark ? "#64748b" : "#94a3b8";
+  const crosshairStroke = isDark ? "#cbd5e1" : "#0f172a";
 
   // hover state
   const [hover, setHover] = useState<{ i: number; cx: number; cy: number } | null>(null);
@@ -280,8 +288,8 @@ export const TimelineChart = ({
           const y = padT + p * (h - padT - padB);
           return (
             <g key={i}>
-              <line x1={padL} y1={y} x2={w - padR} y2={y} stroke="#f1f5f9" strokeWidth="1" />
-              <text x={padL - 6} y={y + 3} fontSize="9" fill="#94a3b8" textAnchor="end" fontFamily="ui-monospace">
+              <line x1={padL} y1={y} x2={w - padR} y2={y} stroke={gridColor} strokeWidth="1" />
+              <text x={padL - 6} y={y + 3} fontSize="9" fill={tickFill} textAnchor="end" fontFamily="ui-monospace">
                 {fmtNum(Math.round(maxL * (1 - p)))}
               </text>
             </g>
@@ -346,7 +354,7 @@ export const TimelineChart = ({
             x={xs(i)}
             y={h - 6}
             fontSize="9"
-            fill="#94a3b8"
+            fill={tickFill}
             textAnchor="middle"
             fontFamily="ui-monospace"
           >
@@ -361,8 +369,8 @@ export const TimelineChart = ({
               y1={padT}
               x2={hover.cx}
               y2={h - padB}
-              stroke="#0f172a"
-              strokeOpacity="0.18"
+              stroke={crosshairStroke}
+              strokeOpacity="0.25"
               strokeWidth="1"
             />
             <circle cx={hover.cx} cy={hover.cy} r="9" fill="#6366f1" fillOpacity="0.18" />
@@ -372,24 +380,24 @@ export const TimelineChart = ({
       </svg>
       {hover && (
         <div
-          className="pointer-events-none -mt-2 text-[11px] text-slate-600 font-mono px-1"
+          className="pointer-events-none -mt-2 text-[11px] text-slate-600 dark:text-slate-300 font-mono px-1"
           style={{ marginLeft: `${(hover.cx / w) * 100}%`, transform: "translateX(-50%)" }}
         >
-          <span className="inline-block bg-white border border-slate-200 rounded-md px-2 py-1 shadow-sm">
-            <span className="text-indigo-600 font-semibold">{fmtNum(data[hover.i].likes)}</span>
-            <span className="text-slate-300 mx-1.5">·</span>
-            <span className="text-slate-500">{fmtNum(data[hover.i].comments)} cm</span>
+          <span className="inline-block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 shadow-sm">
+            <span className="text-indigo-600 dark:text-indigo-300 font-semibold">{fmtNum(data[hover.i].likes)}</span>
+            <span className="text-slate-300 dark:text-slate-600 mx-1.5">·</span>
+            <span className="text-slate-500 dark:text-slate-400">{fmtNum(data[hover.i].comments)} cm</span>
           </span>
         </div>
       )}
-      <div className="flex items-center gap-4 text-[11px] text-slate-500 px-1 mt-1">
+      <div className="flex items-center gap-4 text-[11px] text-slate-500 dark:text-slate-400 px-1 mt-1">
         <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-indigo-500" /> Likes</span>
         <span className="flex items-center gap-1.5">
           <span className="w-3 h-0.5" style={{ borderTop: "1px dashed #94a3b8", background: "transparent" }} /> Comments
         </span>
         {spikes.length > 0 && showSuspicious && (
-          <span className="flex items-center gap-1.5 text-rose-600">
-            <span className="w-1.5 h-1.5 rounded-full ring-2 ring-rose-500 bg-white" /> {spikes.length} suspicious bursts
+          <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
+            <span className="w-1.5 h-1.5 rounded-full ring-2 ring-rose-500 bg-white dark:bg-slate-900" /> {spikes.length} suspicious bursts
           </span>
         )}
       </div>
@@ -436,11 +444,13 @@ export const DonutChart = ({
   });
 
   const animKey = useMemo(() => segments.map((s) => s.value).join("-"), [segments]);
+  const { isDark } = useTheme();
+  const trackColor = isDark ? "#1e293b" : "#f1f5f9";
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size}>
-        <circle cx={cx} cy={cy} r={r} stroke="#f1f5f9" strokeWidth={thickness} fill="none" />
+        <circle cx={cx} cy={cy} r={r} stroke={trackColor} strokeWidth={thickness} fill="none" />
         {arcs.map((a, i) => (
           <path
             key={`${animKey}-${a.key}`}
@@ -459,8 +469,8 @@ export const DonutChart = ({
       </svg>
       {centerValue != null && (
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none animate-fade-in">
-          <div className="font-mono text-2xl font-semibold text-slate-900 tabular-nums">{centerValue}</div>
-          <div className="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5">{centerLabel}</div>
+          <div className="font-mono text-2xl font-semibold text-slate-900 dark:text-slate-100 tabular-nums">{centerValue}</div>
+          <div className="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">{centerLabel}</div>
         </div>
       )}
     </div>
@@ -475,32 +485,37 @@ export const BarList = ({
   rows: { label?: string; country?: string; value: number }[];
   valueSuffix?: string;
   color?: string;
-}) => (
-  <div className="flex flex-col gap-2">
-    {rows.map((r, i) => (
-      <div
-        key={i}
-        className="flex items-center gap-3 group animate-fade-up"
-        style={{ animationDelay: `${i * 60}ms` }}
-      >
-        <div className="text-[12px] text-slate-600 w-32 truncate">{r.label || r.country}</div>
-        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-          <div
-            className="bar-fill h-full rounded-full"
-            style={
-              {
-                "--target": r.value + "%",
-                background: `linear-gradient(90deg, ${color}cc 0%, ${color} 100%)`,
-                animationDelay: `${120 + i * 60}ms`,
-              } as React.CSSProperties
-            }
-          />
+}) => {
+  const { isDark } = useTheme();
+  // Lift near-black inks on dark backgrounds so bars stay visible.
+  const fill = isDark && color.toLowerCase() === "#0f172a" ? "#cbd5e1" : color;
+  return (
+    <div className="flex flex-col gap-2">
+      {rows.map((r, i) => (
+        <div
+          key={i}
+          className="flex items-center gap-3 group animate-fade-up"
+          style={{ animationDelay: `${i * 60}ms` }}
+        >
+          <div className="text-[12px] text-slate-600 dark:text-slate-300 w-32 truncate">{r.label || r.country}</div>
+          <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div
+              className="bar-fill h-full rounded-full"
+              style={
+                {
+                  "--target": r.value + "%",
+                  background: `linear-gradient(90deg, ${fill}cc 0%, ${fill} 100%)`,
+                  animationDelay: `${120 + i * 60}ms`,
+                } as React.CSSProperties
+              }
+            />
+          </div>
+          <div className="font-mono text-[11px] tabular-nums text-slate-500 dark:text-slate-400 w-9 text-right group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
+            {r.value}
+            {valueSuffix}
+          </div>
         </div>
-        <div className="font-mono text-[11px] tabular-nums text-slate-500 w-9 text-right group-hover:text-slate-900 transition-colors">
-          {r.value}
-          {valueSuffix}
-        </div>
-      </div>
-    ))}
-  </div>
-);
+      ))}
+    </div>
+  );
+};

@@ -33,7 +33,7 @@ export const Dashboard = () => {
 
   return (
     <div
-      className="min-h-screen bg-slate-50 text-slate-900"
+      className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
       style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif' }}
     >
       <Header
@@ -49,13 +49,13 @@ export const Dashboard = () => {
         {scan?.influencer && (
           <div className="mb-4 flex items-center justify-between flex-wrap gap-3 animate-fade-up">
             <div>
-              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400 font-semibold">Authenticity Report</div>
-              <h1 className="text-[20px] font-semibold text-slate-900 tracking-tight mt-0.5">
+              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500 font-semibold">Authenticity Report</div>
+              <h1 className="text-[20px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight mt-0.5">
                 {scan.influencer.name}{" "}
-                <span className="text-slate-400 font-normal font-mono text-[15px]">· {scan.influencer.handle}</span>
+                <span className="text-slate-400 dark:text-slate-500 font-normal font-mono text-[15px]">· {scan.influencer.handle}</span>
               </h1>
             </div>
-            <div className="flex items-center gap-2 text-[11px] text-slate-500">
+            <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
               <span className="inline-flex items-center gap-1.5">
                 <span className="relative inline-flex w-1.5 h-1.5">
                   <span className="absolute inset-0 rounded-full bg-emerald-500 animate-pulse-ring" />
@@ -72,7 +72,7 @@ export const Dashboard = () => {
         )}
 
         {loading && !scan && (
-          <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-500 animate-fade-up overflow-hidden relative">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-12 text-center text-slate-500 dark:text-slate-400 animate-fade-up overflow-hidden relative">
             <div className="absolute inset-x-0 top-0 h-0.5 shimmer-bg" />
             <div className="inline-flex items-center gap-2">
               <span className="relative inline-flex w-2 h-2">
@@ -84,7 +84,7 @@ export const Dashboard = () => {
           </div>
         )}
         {error && !scan && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-rose-700">{error}</div>
+          <div className="rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 p-6 text-rose-700 dark:text-rose-300">{error}</div>
         )}
 
         {scan?.influencer && (
@@ -119,12 +119,12 @@ export const Dashboard = () => {
           </div>
         )}
 
-        <footer className="mt-10 pb-4 flex items-center justify-between text-[11px] text-slate-400">
+        <footer className="mt-10 pb-4 flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500">
           <span>Veracity v0.1 · Mock providers — no live platform calls</span>
           <span className="flex items-center gap-3">
-            <a className="hover:text-slate-700">Methodology</a>
-            <a className="hover:text-slate-700">API docs</a>
-            <a className="hover:text-slate-700">Status</a>
+            <a className="hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer">Methodology</a>
+            <a className="hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer">API docs</a>
+            <a className="hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer">Status</a>
           </span>
         </footer>
       </main>

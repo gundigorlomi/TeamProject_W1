@@ -16,7 +16,7 @@ const InfluencerSearch = ({ value, onChange, options }) => {
   );
   const current = options[value];
   return (
-    <div ref={ref} className="relative w-[420px] max-w-full">
+    <div ref={ref} className="relative w-full sm:w-[420px] max-w-full order-3 sm:order-none">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-2.5 bg-white border border-slate-200 rounded-lg px-3 py-2 hover:border-slate-300 transition-colors text-left"
@@ -87,7 +87,7 @@ const InfluencerSearch = ({ value, onChange, options }) => {
 // ---------------- Header ----------------
 const Header = ({ selectedId, onSelect, compareMode, onToggleCompare }) => (
   <header className="sticky top-0 z-30 bg-white/85 backdrop-blur border-b border-slate-200">
-    <div className="max-w-[1440px] mx-auto px-6 py-3 flex items-center gap-4">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-3 sm:gap-4 flex-wrap">
       <div className="flex items-center gap-2.5 shrink-0">
         <div className="w-8 h-8 rounded-lg bg-slate-900 grid place-items-center text-white">
           <IconShield size={16} stroke={2.25} />
@@ -97,7 +97,7 @@ const Header = ({ selectedId, onSelect, compareMode, onToggleCompare }) => (
           <div className="text-[10px] text-slate-500 -mt-0.5">Influencer Authenticity</div>
         </div>
       </div>
-      <div className="h-7 w-px bg-slate-200 mx-1" />
+      <div className="hidden sm:block h-7 w-px bg-slate-200 mx-1" />
       <InfluencerSearch value={selectedId} onChange={onSelect} options={INFLUENCERS} />
       <div className="ml-auto flex items-center gap-2">
         <button
@@ -108,11 +108,11 @@ const Header = ({ selectedId, onSelect, compareMode, onToggleCompare }) => (
           <IconCompare size={13} />
           Compare
         </button>
-        <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-white border border-slate-200 text-slate-700 hover:border-slate-300">
+        <button className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium bg-white border border-slate-200 text-slate-700 hover:border-slate-300">
           <IconDownload size={13} />
           Report
         </button>
-        <div className="h-7 w-px bg-slate-200 mx-1" />
+        <div className="hidden sm:block h-7 w-px bg-slate-200 mx-1" />
         <div className="flex items-center gap-2">
           <Avatar initials="AK" hue={260} size={28} />
           <div className="leading-tight hidden sm:block">
@@ -127,7 +127,7 @@ const Header = ({ selectedId, onSelect, compareMode, onToggleCompare }) => (
 
 // ---------------- Single-Influencer Dashboard ----------------
 const Dashboard = ({ inf }) => (
-  <div className="grid grid-cols-12 gap-4">
+  <div className="dashboard-grid grid grid-cols-12 gap-4">
     {/* Row 1: Profile + Score */}
     <div className="col-span-12 lg:col-span-5">
       <div className="flex flex-col gap-4">

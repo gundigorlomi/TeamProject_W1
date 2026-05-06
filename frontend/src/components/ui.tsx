@@ -45,16 +45,16 @@ export const Card = ({
 }) => (
   <section
     className={
-      "bg-white border border-slate-200 rounded-xl animate-fade-up " +
+      "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl animate-fade-up " +
       (interactive ? "card-lift " : "") +
       className
     }
   >
     {(title || action) && (
-      <header className="flex items-start justify-between gap-4 px-5 pt-4 pb-3 border-b border-slate-100">
+      <header className="flex items-start justify-between gap-4 px-5 pt-4 pb-3 border-b border-slate-100 dark:border-slate-800">
         <div>
-          {title && <h3 className="text-sm font-semibold text-slate-900 tracking-tight">{title}</h3>}
-          {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+          {title && <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 tracking-tight">{title}</h3>}
+          {subtitle && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>}
         </div>
         {action}
       </header>

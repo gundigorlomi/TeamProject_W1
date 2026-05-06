@@ -74,29 +74,29 @@ export const InfluencerSearch = ({
     <div ref={ref} className="relative w-[420px] max-w-full">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2.5 bg-white border border-slate-200 rounded-lg px-3 py-2 hover:border-slate-300 transition-colors text-left"
+        className="w-full flex items-center gap-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 hover:border-slate-300 dark:hover:border-slate-700 transition-colors text-left"
       >
-        <IconSearch size={15} className="text-slate-400 shrink-0" />
+        <IconSearch size={15} className="text-slate-400 dark:text-slate-500 shrink-0" />
         {current ? (
           <>
             <Avatar initials={current.avatar} hue={current.avatar_hue} size={22} />
             <div className="flex-1 min-w-0">
-              <div className="text-[13px] font-medium text-slate-900 leading-tight truncate">
-                {current.handle} <span className="text-slate-400 font-normal">· {current.niche}</span>
+              <div className="text-[13px] font-medium text-slate-900 dark:text-slate-100 leading-tight truncate">
+                {current.handle} <span className="text-slate-400 dark:text-slate-500 font-normal">· {current.niche}</span>
               </div>
             </div>
-            <PlatformIcon platform={current.platform} size={13} className="text-slate-400" />
+            <PlatformIcon platform={current.platform} size={13} className="text-slate-400 dark:text-slate-500" />
           </>
         ) : (
-          <span className="flex-1 text-[13px] text-slate-400">Search by handle, name, or niche…</span>
+          <span className="flex-1 text-[13px] text-slate-400 dark:text-slate-500">Search by handle, name, or niche…</span>
         )}
-        <IconChevronDown size={14} className={"text-slate-400 transition-transform " + (open ? "rotate-180" : "")} />
+        <IconChevronDown size={14} className={"text-slate-400 dark:text-slate-500 transition-transform " + (open ? "rotate-180" : "")} />
       </button>
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-lg shadow-lg z-50 overflow-hidden">
-          <div className="p-2 border-b border-slate-100">
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-lg dark:shadow-2xl dark:shadow-black/40 z-50 overflow-hidden animate-fade-up" style={{ animationDuration: "240ms" }}>
+          <div className="p-2 border-b border-slate-100 dark:border-slate-800">
             <div className="relative">
-              <IconSearch size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <IconSearch size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
               <input
                 autoFocus
                 value={q}
@@ -105,21 +105,21 @@ export const InfluencerSearch = ({
                   if (e.key === "Enter" && items.length === 0 && q.trim()) handleAdhoc();
                 }}
                 placeholder="Search by handle, name, or niche…"
-                className="w-full pl-8 pr-3 py-1.5 text-[13px] bg-slate-50 rounded-md focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20"
+                className="w-full pl-8 pr-3 py-1.5 text-[13px] bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 rounded-md focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
           </div>
           <div className="max-h-80 overflow-auto py-1">
             {loading ? (
-              <div className="px-3 py-6 text-center text-sm text-slate-400">Searching…</div>
+              <div className="px-3 py-6 text-center text-sm text-slate-400 dark:text-slate-500">Searching…</div>
             ) : items.length === 0 ? (
-              <div className="px-3 py-6 text-center text-sm text-slate-500">
+              <div className="px-3 py-6 text-center text-sm text-slate-500 dark:text-slate-400">
                 <div>No matches in your library.</div>
                 {q.trim() && (
                   <button
                     onClick={handleAdhoc}
                     disabled={adhocBusy}
-                    className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 text-white text-[12px] font-medium disabled:opacity-50"
+                    className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 dark:bg-indigo-500 text-white text-[12px] font-medium disabled:opacity-50 active:scale-95 transition-transform"
                   >
                     {adhocBusy ? "Scanning…" : `Run scan on ${q.trim()}`}
                   </button>
@@ -136,17 +136,20 @@ export const InfluencerSearch = ({
                       setOpen(false);
                       setQ("");
                     }}
-                    className={"w-full flex items-center gap-3 px-3 py-2 hover:bg-slate-50 text-left " + (current?.id === o.id ? "bg-slate-50" : "")}
+                    className={
+                      "w-full flex items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/70 " +
+                      (current?.id === o.id ? "bg-slate-50 dark:bg-slate-800/70" : "")
+                    }
                   >
                     <Avatar initials={o.avatar} hue={o.avatar_hue} size={32} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[13px] font-medium text-slate-900">{o.name}</span>
-                        <span className="text-[12px] text-slate-500 font-mono">{o.handle}</span>
+                        <span className="text-[13px] font-medium text-slate-900 dark:text-slate-100">{o.name}</span>
+                        <span className="text-[12px] text-slate-500 dark:text-slate-400 font-mono">{o.handle}</span>
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <PlatformIcon platform={o.platform} size={10} className="text-slate-400" />
-                        <span className="text-[11px] text-slate-500">{o.niche} · {fmtNum(o.followers)}</span>
+                        <PlatformIcon platform={o.platform} size={10} className="text-slate-400 dark:text-slate-500" />
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">{o.niche} · {fmtNum(o.followers)}</span>
                       </div>
                     </div>
                     {tier && o.latest_score != null && (
@@ -162,7 +165,7 @@ export const InfluencerSearch = ({
               })
             )}
           </div>
-          <div className="px-3 py-2 border-t border-slate-100 bg-slate-50 text-[10px] text-slate-500 flex items-center justify-between">
+          <div className="px-3 py-2 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
             <span>Backed by /influencers · live API</span>
             <span className="font-mono">⌘K</span>
           </div>

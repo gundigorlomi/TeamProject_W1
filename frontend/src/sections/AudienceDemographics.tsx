@@ -6,17 +6,17 @@ export const AudienceDemographics = ({ demo }: { demo: AudienceDemo }) => (
   <Card title="Audience Demographics" subtitle="Inferred from follower sample (n=10,000)">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <div className="text-[11px] uppercase tracking-wider text-slate-400 font-medium mb-2.5">Age</div>
+        <div className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium mb-2.5">Age</div>
         <BarList rows={demo.ageGroups} color="#6366f1" />
       </div>
       <div>
-        <div className="text-[11px] uppercase tracking-wider text-slate-400 font-medium mb-2.5">Top countries</div>
+        <div className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium mb-2.5">Top countries</div>
         <BarList rows={demo.topCountries} color="#0f172a" />
       </div>
     </div>
-    <div className="mt-5 pt-4 border-t border-slate-100">
-      <div className="text-[11px] uppercase tracking-wider text-slate-400 font-medium mb-2.5">Gender split</div>
-      <div className="flex items-center gap-1 h-2 rounded-full overflow-hidden bg-slate-100">
+    <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+      <div className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-medium mb-2.5">Gender split</div>
+      <div className="flex items-center gap-1 h-2 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
         <div
           className="bar-fill h-full"
           style={
@@ -48,10 +48,10 @@ export const AudienceDemographics = ({ demo }: { demo: AudienceDemo }) => (
           }
         />
       </div>
-      <div className="flex items-center gap-4 mt-2 text-[11px] text-slate-600">
+      <div className="flex items-center gap-4 mt-2 text-[11px] text-slate-600 dark:text-slate-300">
         <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-pink-500" /> F {demo.genderSplit.female}%</span>
         <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-blue-500" /> M {demo.genderSplit.male}%</span>
-        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-slate-400" /> Other {demo.genderSplit.other}%</span>
+        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-slate-400 dark:bg-slate-500" /> Other {demo.genderSplit.other}%</span>
       </div>
     </div>
   </Card>

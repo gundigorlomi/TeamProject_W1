@@ -2,16 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme tokens — overridden under .dark on <html>. */
+:root {
+  --bg: #f8fafc;             /* slate-50 */
+  --card: #ffffff;
+  --ink: #0f172a;            /* slate-900 */
+  --muted: #94a3b8;          /* slate-400 */
+  --line-soft: #f1f5f9;      /* grid + chip backgrounds */
+  --line: #e2e8f0;           /* slate-200 */
+  --hover-tint: rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 10px 30px -12px rgba(15, 23, 42, 0.14),
+    0 4px 10px -6px rgba(15, 23, 42, 0.08);
+}
+.dark {
+  --bg: #020617;             /* slate-950 */
+  --card: #0f172a;           /* slate-900 */
+  --ink: #f1f5f9;            /* slate-100 */
+  --muted: #64748b;
+  --line-soft: #1e293b;      /* slate-800 */
+  --line: #1e293b;
+  --hover-tint: rgba(255, 255, 255, 0.04);
+  --shadow-card: 0 10px 30px -12px rgba(0, 0, 0, 0.55),
+    0 4px 10px -6px rgba(0, 0, 0, 0.45);
+}
+
 html,
 body {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
+  transition: background-color 320ms ease, color 320ms ease;
 }
 .font-mono {
   font-family: "JetBrains Mono", ui-monospace, monospace !important;
 }
 body {
-  background: #f8fafc;
+  background: var(--bg);
+  color: var(--ink);
 }
+
+/* Smooth color crossfade only while the theme is actively flipping. The
+ * `theme-transition` class is added to <html> for ~350ms by useTheme.toggle. */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 320ms ease, border-color 320ms ease,
+    color 320ms ease, fill 320ms ease, stroke 320ms ease,
+    box-shadow 320ms ease !important;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -19,7 +57,10 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 999px;
-  border: 2px solid #f8fafc;
+  border: 2px solid var(--bg);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
 }
 ::-webkit-scrollbar-track {
   background: transparent;

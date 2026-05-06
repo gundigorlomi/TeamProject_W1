@@ -16,13 +16,13 @@ export const CommentQuality = ({ data }: { data: CommentBreakdown }) => {
           {segs.map((s, i) => (
             <div key={i} className="flex items-center gap-2.5">
               <span className="w-2.5 h-2.5 rounded-sm" style={{ background: s.color }} />
-              <span className="text-[13px] text-slate-700 flex-1">{s.label}</span>
+              <span className="text-[13px] text-slate-700 dark:text-slate-300 flex-1">{s.label}</span>
               <span className="font-mono text-[13px] font-semibold tabular-nums" style={{ color: s.color }}>
                 {s.value}%
               </span>
             </div>
           ))}
-          <div className="mt-2 pt-2.5 border-t border-slate-100 text-[11px] text-slate-500 leading-snug">
+          <div className="mt-2 pt-2.5 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
             Generic = 1–3 word praise / emoji-only.
             <br />
             Spam = links, repeated templates, promo.

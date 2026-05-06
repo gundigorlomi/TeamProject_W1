@@ -52,9 +52,14 @@ const ProfileCard = ({ inf, compact = false }) => {
           { label: "Avg likes", value: fmtNum(inf.avgLikes) },
           { label: "Account age", value: inf.accountAge },
         ].map((s, i) => (
-          <div key={i} className={"px-4 py-3 " + (i > 0 ? "border-l border-slate-100" : "")}>
+          <div key={i} className={"metric-cell px-4 py-3 " + (i > 0 ? "border-l border-slate-100" : "")}>
             <div className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">{s.label}</div>
-            <div className="font-mono text-[15px] font-semibold text-slate-900 mt-0.5 tabular-nums">{s.value}</div>
+            <div className="metric-value font-mono text-[15px] font-semibold text-slate-900 mt-0.5 tabular-nums">
+              {s.label === "Followers" && <AnimatedNumber value={inf.followers} format={fmtNum} />}
+              {s.label === "Posts" && <AnimatedNumber value={inf.posts} format={fmtNum} />}
+              {s.label === "Avg likes" && <AnimatedNumber value={inf.avgLikes} format={fmtNum} />}
+              {s.label === "Account age" && s.value}
+            </div>
           </div>
         ))}
       </div>
@@ -65,7 +70,15 @@ const ProfileCard = ({ inf, compact = false }) => {
 // ---------------- Generated Profile Photos ----------------
 const GeneratedProfilePhotos = ({ inf, compact = false }) => {
   const photos = (inf.generatedPhotos || []).slice(0, compact ? 3 : 4);
+  const scrollerRef = React.useRef(null);
   if (!photos.length) return null;
+
+  const scrollByPhoto = (direction) => {
+    const node = scrollerRef.current;
+    if (!node) return;
+    const step = Math.min(320, node.clientWidth * 0.78);
+    node.scrollBy({ left: direction * step, behavior: "smooth" });
+  };
 
   return (
     <Card
@@ -74,22 +87,48 @@ const GeneratedProfilePhotos = ({ inf, compact = false }) => {
       padded={false}
       className="overflow-hidden"
     >
-      <div className={"grid gap-px bg-slate-200 " + (compact ? "grid-cols-3" : "grid-cols-2")}>
-        {photos.map((photo, i) => (
-          <figure key={photo.src} className="relative aspect-square overflow-hidden bg-slate-100 group">
-            <img
-              src={photo.src}
-              alt={photo.alt || `${inf.name} generated profile photo ${i + 1}`}
-              loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-            />
-            {!compact && (
-              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/70 to-transparent px-3 pb-2 pt-8 text-[11px] font-medium text-white">
-                {photo.label}
-              </figcaption>
-            )}
-          </figure>
-        ))}
+      <div className="relative">
+        <button
+          onClick={() => scrollByPhoto(-1)}
+          className="absolute left-2 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-white/35 text-white shadow-sm ring-1 ring-white/45 backdrop-blur-sm transition-colors hover:bg-white/55 focus:outline-none focus:ring-2 focus:ring-white/80"
+          aria-label="Scroll photos left"
+        >
+          <IconChevronDown size={16} stroke={2.5} className="rotate-90 drop-shadow" />
+        </button>
+        <div
+          ref={scrollerRef}
+          className="flex snap-x snap-mandatory gap-px overflow-x-auto bg-slate-200 scroll-smooth"
+          style={{ scrollbarWidth: "none" }}
+        >
+          {photos.map((photo, i) => (
+            <figure
+              key={photo.src}
+              className={
+                "relative shrink-0 snap-start overflow-hidden bg-slate-100 group " +
+                (compact ? "w-[40%] min-w-[108px] aspect-square" : "w-[58%] sm:w-[42%] lg:w-[31%] aspect-[4/3]")
+              }
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt || `${inf.name} generated profile photo ${i + 1}`}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              />
+              {!compact && (
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/70 to-transparent px-3 pb-2 pt-8 text-[11px] font-medium text-white">
+                  {photo.label}
+                </figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
+        <button
+          onClick={() => scrollByPhoto(1)}
+          className="absolute right-2 top-1/2 z-10 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full bg-white/35 text-white shadow-sm ring-1 ring-white/45 backdrop-blur-sm transition-colors hover:bg-white/55 focus:outline-none focus:ring-2 focus:ring-white/80"
+          aria-label="Scroll photos right"
+        >
+          <IconChevronDown size={16} stroke={2.5} className="-rotate-90 drop-shadow" />
+        </button>
       </div>
     </Card>
   );
@@ -109,9 +148,9 @@ const ScoreCard = ({ inf }) => {
           <IconRefresh size={12} /> Re-scan
         </button>
       </div>
-      <div className="p-5 grid grid-cols-[auto_1fr] gap-6 items-center">
+      <div className="p-5 grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-5 sm:gap-6 items-center">
         <AuthenticityGauge score={inf.score} />
-        <div className="flex flex-col gap-3.5">
+        <div className="w-full flex flex-col gap-3.5">
           <SubscoreBar label="Follower Quality" value={inf.subscores.followerQuality} hint="profile signals" />
           <SubscoreBar label="Engagement Authenticity" value={inf.subscores.engagementAuthenticity} hint="comment & like patterns" />
           <SubscoreBar label="Audience–Content Fit" value={inf.subscores.audienceContentFit} hint="demo vs niche" />
@@ -172,22 +211,72 @@ const RedFlagsPanel = ({ inf }) => {
   );
 };
 
+const RANGE_OPTIONS = {
+  "90d": { label: "90d", points: 80, subtitle: "Last 90 days" },
+  "6m": { label: "6m", points: 120, subtitle: "Last 6 months" },
+  "1y": { label: "1y", points: 168, subtitle: "Last 12 months" },
+};
+
+const buildRangeTimeline = (timeline, range) => {
+  const option = RANGE_OPTIONS[range] || RANGE_OPTIONS["90d"];
+  if (range === "90d") return timeline;
+
+  return Array.from({ length: option.points }, (_, i) => {
+    const sourceIndex = (i / Math.max(1, option.points - 1)) * (timeline.length - 1);
+    const lo = Math.floor(sourceIndex);
+    const hi = Math.min(timeline.length - 1, Math.ceil(sourceIndex));
+    const mix = sourceIndex - lo;
+    const base = timeline[lo];
+    const next = timeline[hi];
+    const seasonality = 1 + Math.sin(i * 0.22 + option.points * 0.01) * (range === "1y" ? 0.08 : 0.05);
+    const likes = (base.likes + (next.likes - base.likes) * mix) * seasonality;
+    const comments = (base.comments + (next.comments - base.comments) * mix) * (1 + Math.cos(i * 0.18) * 0.04);
+    return {
+      day: i,
+      likes: Math.round(likes),
+      comments: Math.round(comments),
+      suspicious: base.suspicious || next.suspicious,
+    };
+  });
+};
+
 // ---------------- Engagement Timeline ----------------
-const EngagementTimeline = ({ inf }) => (
-  <Card
-    title="Engagement Timeline"
-    subtitle="Last 90 days · likes & comments per post"
-    action={
-      <div className="flex items-center gap-1 text-[11px] bg-slate-100 rounded-md p-0.5">
-        <button className="px-2 py-1 rounded bg-white shadow-sm font-medium text-slate-900">90d</button>
-        <button className="px-2 py-1 text-slate-500 hover:text-slate-900">6m</button>
-        <button className="px-2 py-1 text-slate-500 hover:text-slate-900">1y</button>
-      </div>
-    }
-  >
-    <TimelineChart data={inf.timeline} height={200} />
-  </Card>
-);
+const EngagementTimeline = ({ inf }) => {
+  const [range, setRange] = React.useState("90d");
+  const timeline = React.useMemo(() => buildRangeTimeline(inf.timeline, range), [inf.timeline, range]);
+  const rangeLabels = Object.keys(RANGE_OPTIONS);
+  const rangeIndex = rangeLabels.indexOf(range);
+
+  return (
+    <Card
+      title="Engagement Timeline"
+      subtitle={`${RANGE_OPTIONS[range].subtitle} · likes & comments per post`}
+      action={
+        <div
+          className="range-control flex items-center gap-1 text-[11px] bg-slate-100 rounded-md p-0.5"
+          style={{ "--range-x": `${Math.max(0, rangeIndex) * 100}%` }}
+        >
+          <span className="range-thumb" />
+          {rangeLabels.map((label) => (
+            <button
+              key={label}
+              onClick={() => setRange(label)}
+              aria-pressed={range === label}
+              className={
+                "relative z-10 min-w-[34px] px-2 py-1 rounded font-medium transition-colors " +
+                (range === label ? "text-slate-900" : "text-slate-500 hover:text-slate-900")
+              }
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      }
+    >
+      <TimelineChart key={range} data={timeline} height={200} range={range} />
+    </Card>
+  );
+};
 
 // ---------------- Comment Quality Donut ----------------
 const CommentQuality = ({ inf }) => {
@@ -287,9 +376,9 @@ const AudienceDemographics = ({ inf }) => (
     <div className="mt-5 pt-4 border-t border-slate-100">
       <div className="text-[11px] uppercase tracking-wider text-slate-400 font-medium mb-2.5">Gender split</div>
       <div className="flex items-center gap-1 h-2 rounded-full overflow-hidden">
-        <div className="h-full" style={{ width: inf.audienceDemo.genderSplit.female + "%", background: "#ec4899" }} />
-        <div className="h-full" style={{ width: inf.audienceDemo.genderSplit.male + "%", background: "#3b82f6" }} />
-        <div className="h-full" style={{ width: inf.audienceDemo.genderSplit.other + "%", background: "#94a3b8" }} />
+        <div className="bar-fill h-full" style={{ width: inf.audienceDemo.genderSplit.female + "%", background: "#ec4899" }} />
+        <div className="bar-fill h-full" style={{ width: inf.audienceDemo.genderSplit.male + "%", background: "#3b82f6" }} />
+        <div className="bar-fill h-full" style={{ width: inf.audienceDemo.genderSplit.other + "%", background: "#94a3b8" }} />
       </div>
       <div className="flex items-center gap-4 mt-2 text-[11px] text-slate-600">
         <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-pink-500" /> F {inf.audienceDemo.genderSplit.female}%</span>

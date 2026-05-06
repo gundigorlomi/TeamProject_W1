@@ -9,7 +9,7 @@ const RequireAuth = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) {
     return (
-      <div className="min-h-screen grid place-items-center text-slate-400 text-sm">Loading…</div>
+      <div className="min-h-screen grid place-items-center bg-slate-50 dark:bg-slate-950 text-slate-400 dark:text-slate-500 text-sm">Loading…</div>
     );
   }
   if (!user) return <Navigate to="/login" replace />;

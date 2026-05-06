@@ -10,15 +10,15 @@ export const ScoreCard = ({ scan, onRescan, rescanning }: { scan: ScanResult; on
   const tier = scoreTier(score);
   return (
     <Card padded={false}>
-      <div className="px-5 pt-4 pb-3 border-b border-slate-100 flex items-center justify-between">
+      <div className="px-5 pt-4 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900">Authenticity Score</h3>
-          <p className="text-xs text-slate-500 mt-0.5">Composite of 4 weighted signals</p>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Authenticity Score</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Composite of 4 weighted signals</p>
         </div>
         <button
           onClick={onRescan}
           disabled={rescanning}
-          className="text-[11px] text-slate-500 hover:text-slate-900 inline-flex items-center gap-1 px-2 py-1 rounded-md hover:bg-slate-100 active:scale-95 transition-all duration-200 disabled:opacity-50"
+          className="text-[11px] text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 inline-flex items-center gap-1 px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all duration-200 disabled:opacity-50"
         >
           <IconRefresh size={12} className={rescanning ? "animate-spin" : ""} /> {rescanning ? "Re-scanning..." : "Re-scan"}
         </button>
@@ -42,8 +42,8 @@ export const ScoreCard = ({ scan, onRescan, rescanning }: { scan: ScanResult; on
           <SubscoreBar label="Growth Pattern" value={subs.growth_pattern} hint="velocity anomalies" delayMs={450} />
         </div>
       </div>
-      <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between text-[12px]">
-        <div className="flex items-center gap-2 text-slate-600">
+      <div className="px-5 py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-between text-[12px]">
+        <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
           <IconShield size={13} />
           <span>
             Verdict:{" "}
@@ -52,7 +52,7 @@ export const ScoreCard = ({ scan, onRescan, rescanning }: { scan: ScanResult; on
             </span>
           </span>
         </div>
-        <div className="text-slate-500 font-mono text-[11px]">Confidence {Math.round((scan.confidence ?? 0) * 100)}%</div>
+        <div className="text-slate-500 dark:text-slate-400 font-mono text-[11px]">Confidence {Math.round((scan.confidence ?? 0) * 100)}%</div>
       </div>
     </Card>
   );

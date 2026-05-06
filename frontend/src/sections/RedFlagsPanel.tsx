@@ -29,7 +29,7 @@ export const RedFlagsPanel = ({ flags }: { flags: RedFlag[] }) => {
       }
     >
       {flags.length === 0 ? (
-        <div className="text-center py-6 text-slate-500 text-sm">
+        <div className="text-center py-6 text-slate-500 dark:text-slate-400 text-sm">
           <IconCheck size={28} className="mx-auto mb-2 text-emerald-500" />
           No red flags detected
         </div>
