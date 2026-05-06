@@ -1,0 +1,26 @@
+from pydantic import BaseModel, Field
+
+
+class SignupRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=255)
+    password: str = Field(min_length=4, max_length=128)
+    agency_name: str = ""
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class UserResponse(BaseModel):
+    id: int
+    email: str
+    agency_name: str
+    role: str
+
+    model_config = {"from_attributes": True}
